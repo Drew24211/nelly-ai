@@ -1,0 +1,23 @@
+NELLY 3.0 — Reference Layout Upgrade
+
+INSTALL ON YOUR EXISTING RENDER APP
+1. Extract this ZIP.
+2. Open GitHub Drew24211/nelly-ai, then open public.
+3. Add file > Upload files. Upload ALL FIVE files from this ZIP public folder, replacing the existing files. Do not upload the ZIP itself.
+4. Commit changes. In Render, deploy the latest commit.
+5. Wait for Live, then press Ctrl+Shift+R on the Nelly site.
+No server.js or API key changes are required.
+
+Included: index.html, style.css, app.js, nelly-interface.jpg, nelly-avatar.jpg.
+The original supplied reference image is retained as the visual artwork, with functional HTML controls placed over its layout. This preserves the exact pink portrait, flowers, rings and decoration. The artwork is static, not a facial-animation model.
+
+DEV EDITOR: type AI template Reset into the chat input and send.
+Add names, portraits and personalities; activate or delete templates. This editor is browser-local and is not password protection. Use Settings or Models to reopen it.
+
+VOICE IMPORT: JSON presets use name and voiceURI fields and map to installed browser voices. Audio imports are playable reference samples, not voice cloning. Browser voices vary by device. A neural speech provider is not connected in this version.
+
+MUSIC: import local audio files via the + in the music player. Play/pause, previous/next and volume work. Media and custom portraits are saved in IndexedDB on your browser. Notes and presets are stored locally. They do not sync across devices.
+
+MIC: speech recognition needs browser support (Chrome/Edge), HTTPS, and microphone permission. Wake mode requires the tab open. The small mic is beside the message bar.
+
+Chat continues using the existing /api/chat endpoint and your server's configured Claude model.
