@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nelly wake test</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#100811; color:#f6e7f3; padding:2rem; max-width:34rem; margin:auto; }
+  #status { padding:.6rem 1rem; border-radius:.5rem; background:#2a1630; margin:1rem 0; }
+  #log { font-family: ui-monospace, monospace; font-size:.9rem; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+  <h1>Nelly wake test</h1>
+  <p>Run <code>python nelly.py</code>, then clap twice or say "Hey Nelly".</p>
+  <div id="status">Connecting...</div>
+  <div id="log"></div>
+  <script>
+    window.nellyWake = (src) => {
+      document.getElementById("log").textContent += new Date().toLocaleTimeString() + "  wake from " + src + "\n";
+      document.body.style.background = "#3b1d44";
+      setTimeout(() => document.body.style.background = "#100811", 600);
+    };
+    (function check() {
+      let ws;
+      try { ws = new WebSocket("ws://127.0.0.1:8765"); } catch (e) { return; }
+      ws.onopen = () => document.getElementById("status").textContent = "Connected to nelly.py";
+      ws.onclose = () => { document.getElementById("status").textContent = "Not connected. Is nelly.py running?"; setTimeout(check, 3000); };
+    })();
+  </script>
+  <script src="nelly-wake.js"></script>
+</body>
+</html>

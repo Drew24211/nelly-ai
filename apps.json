@@ -1,0 +1,12 @@
+{
+  "spotify":   {"windows": "spotify", "mac": "Spotify", "linux": "spotify"},
+  "chrome":    {"windows": "chrome", "mac": "Google Chrome", "linux": "google-chrome"},
+  "browser":   {"windows": "chrome", "mac": "Google Chrome", "linux": "google-chrome"},
+  "notepad":   {"windows": "notepad", "mac": "TextEdit", "linux": "gedit"},
+  "calculator":{"windows": "calc", "mac": "Calculator", "linux": "gnome-calculator"},
+  "code":      {"windows": "code", "mac": "Visual Studio Code", "linux": "code"},
+  "terminal":  {"windows": "wt", "mac": "Terminal", "linux": "gnome-terminal"},
+  "youtube":   "https://youtube.com",
+  "gmail":     "https://mail.google.com",
+  "netflix":   "https://netflix.com"
+}

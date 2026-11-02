@@ -1,0 +1,8 @@
+numpy
+requests
+sounddevice
+SpeechRecognition
+edge-tts
+pygame
+pyttsx3
+websockets
