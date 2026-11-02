@@ -10,12 +10,13 @@ const baseDir=path.dirname(fileURLToPath(import.meta.url));
 // Handle the common upload layouts without exposing the repository or .env files.
 const candidates=['public','public/public','.'].map((folder,index)=>{const dir=path.resolve(baseDir,folder),file=path.join(dir,'index.html');if(!existsSync(file))return null;const html=readFileSync(file,'utf8');if(!html.includes('id="console"')||!html.includes('id="chatForm"'))return null;const version=Number(html.match(/(?:app|style)\.(?:js|css)\?v=(\d+)/)?.[1]||0);return {dir,version,index}}).filter(Boolean).sort((a,b)=>b.version-a.version||a.index-b.index);
 const selected=candidates[0]||{dir:path.join(baseDir,'public'),version:0};
-const assets=['index.html','style.css','app.js','living.js','model-viewer.js','nelly-anime.png','drew-anime.png','pink-daydream.wav','drew-click.wav','nelly-avatar.jpg','nelly-interface.jpg'];
+const assets=['studio.js','blue-orbit.wav','index.html','style.css','app.js','living.js','model-viewer.js','nelly-anime.png','drew-anime.png','pink-daydream.wav','drew-click.wav','nelly-avatar.jpg','nelly-interface.jpg'];
 for(const asset of assets)app.get(asset==='index.html'?['/','/index.html']:'/'+asset,(req,res,next)=>{const file=path.join(selected.dir,asset);if(!existsSync(file))return next();if(/\.(?:html|js|css)$/.test(asset))res.set('Cache-Control','no-cache');res.sendFile(file)});
 app.use(express.static(path.join(baseDir,'public'),{dotfiles:'deny'}));
 app.get('/api/health',(req,res)=>res.json({ok:true,interfaceVersion:selected.version}));
 const limiter = new Map();
 app.post('/api/chat', async (req,res)=>{
+  if(req.body?.provider&&req.body.provider!=='claude')return res.status(400).json({error:'This provider is a saved future integration. Claude is the connected provider.'});
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return res.status(503).json({error:'Claude API key not configured. Add ANTHROPIC_API_KEY to .env on the server.'});
   const ip=req.ip, now=Date.now(), entry=limiter.get(ip)||[];
@@ -37,5 +38,20 @@ app.post('/api/chat', async (req,res)=>{
     if(!response.ok) return res.status(response.status).json({error:data.error?.message||'Claude API request failed.'});
     res.json({reply:(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n')||'I could not generate a reply.'});
   }catch(err){res.status(502).json({error:'Could not connect to Claude. Check the server connection.'});}
+});
+// Speech services use server-held credentials. Never expose them to the browser.
+const speechLimits=new Map();
+function speechLimit(req,res,next){const now=Date.now(),r=(speechLimits.get(req.ip)||[]).filter(t=>now-t<60000);if(r.length>=12)return res.status(429).json({error:'Voice request limit reached. Wait a minute.'});r.push(now);speechLimits.set(req.ip,r);next()}
+app.get('/api/capabilities',(req,res)=>res.json({chat:'claude',transcription:!!process.env.DEEPGRAM_API_KEY,neuralVoice:!!process.env.ELEVENLABS_API_KEY}));
+app.post('/api/transcribe',speechLimit,express.raw({type:['audio/*','video/webm','application/octet-stream'],limit:'8mb'}),async(req,res)=>{
+ if(!process.env.DEEPGRAM_API_KEY)return res.status(503).json({error:'Server microphone transcription needs DEEPGRAM_API_KEY in Render Environment. Browser recognition remains available.'});
+ if(!Buffer.isBuffer(req.body)||!req.body.length)return res.status(400).json({error:'No audio recording received.'});
+ try{const r=await fetch('https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true',{method:'POST',signal:AbortSignal.timeout(30000),headers:{Authorization:'Token '+process.env.DEEPGRAM_API_KEY,'Content-Type':req.get('content-type')},body:req.body});const d=await r.json();if(!r.ok)return res.status(502).json({error:'Transcription service rejected the recording. Check its key and credits.'});res.json({text:d.results?.channels?.[0]?.alternatives?.[0]?.transcript||''})}catch{res.status(502).json({error:'Transcription service unavailable.'})}
+});
+app.post('/api/speech',speechLimit,async(req,res)=>{
+ if(!process.env.ELEVENLABS_API_KEY)return res.status(503).json({error:'Online voices need ELEVENLABS_API_KEY on Render. Choose Default voice meanwhile.'});
+ const {text,voiceId,companion}=req.body||{};if(typeof text!=='string'||text.length>6000||!text.trim())return res.status(400).json({error:'Invalid speech text.'});
+ const id=voiceId||(companion==='drew'?process.env.ELEVENLABS_DREW_VOICE_ID:process.env.ELEVENLABS_NELLY_VOICE_ID);if(!/^[a-zA-Z0-9_-]{8,100}$/.test(id||''))return res.status(400).json({error:'Choose an online voice ID in Voice studio, or configure its server voice ID.'});
+ try{const r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+encodeURIComponent(id),{method:'POST',signal:AbortSignal.timeout(30000),headers:{'xi-api-key':process.env.ELEVENLABS_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({text,model_id:'eleven_multilingual_v2'})});if(!r.ok)return res.status(502).json({error:'Voice service rejected the request. Check voice access, key and allowance.'});res.type('audio/mpeg').send(Buffer.from(await r.arrayBuffer()))}catch{res.status(502).json({error:'Online voice unavailable.'})}
 });
 app.listen(process.env.PORT||3000,()=>console.log(`NELLY ready at http://localhost:${process.env.PORT||3000}`));

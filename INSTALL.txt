@@ -1,25 +1,34 @@
-NELLY + DREW v8 — Identity, personality, Switch buttons and voice diagnostics
+NELLY & DREW v9 — INSTALL
 
-ONE-FOLDER INSTALL
 1. Extract this ZIP.
-2. Open https://github.com/Drew24211/nelly-ai (main repository folder, NOT public).
-3. Add file > Upload files. Upload ALL extracted files directly into that main folder, replacing existing versions. Do not upload the ZIP itself or a containing folder.
-4. Commit. In Render, verify Build Command = npm install and Start Command = npm start. Deploy the latest commit and wait for Live.
-5. Open https://nelly-ai.onrender.com and press Ctrl+Shift+R.
-6. https://nelly-ai.onrender.com/api/health should report interfaceVersion 8.
-No API-key change is needed. server.js now selects the highest-version valid interface across main, public and public/public. It only serves whitelisted main-folder UI files, not private repository files. Other existing files are not deleted.
+2. Upload ALL extracted files directly into the MAIN folder of Drew24211/nelly-ai on GitHub. Replace matching files. Do not put them into another public folder.
+3. Commit. On Render deploy the latest commit, then refresh the site.
+4. /api/health should report interfaceVersion 9.
 
-NEW
-Models has explicit Switch buttons. Nelly remains the default on every page load.
-Nelly's built-in identity knows N.E.L.L.Y. = Neural Emotive Logic & Learning Yield, her virtual avatar appearance, and a warm, curious, thoughtful, gently witty personality. Drew has Dynamic Reasoning & Electronic Wisdom, his own blue avatar description, and a calm, strategic, resourceful personality. The server puts the active profile in the chat system prompt.
-Memory lets you save a nickname, tone and personal notes. Type remember that… to save a note in chat. Each companion has a separate editable profile. Preferences are browser-local and sent with chat requests. This is persistent context, not model retraining or consciousness.
-Voice & Appearance > Microphone & speaker test lets you record five seconds, play it back, try recognition and test the speaking voice. This distinguishes input hardware from a failed speech-recognition service. A recording test does not provide an alternate transcription engine. Chrome or Edge and HTTPS are still required for best browser speech support. Fixes wake-listening restart while speech output is pending.
+PUBLIC LINK
+Your existing Render URL remains the shareable website link. This ZIP does not deploy itself. Visitor customization and memory stay in that visitor's browser. Visitors use your server's Claude allowance.
 
-DEFAULT VOICE / UPLOADED CLIP
-The attached 5.5-second audio clip has not been made a generative voice. A recording can be a greeting or sample, but cannot speak new replies without a suitable voice service. Browser voices remain the live default until an actual speech provider is configured.
+VOICE DEFAULTS
+Drew selects a recognized male browser voice; Nelly selects a recognized female browser voice. Available voices depend on the visitor's operating system/browser. Voice studio saves each companion's voice and settings separately.
+Online voice toggle: configure ELEVENLABS_API_KEY in Render Environment, then choose a voice ID in Voice studio for each character. Alternatively set ELEVENLABS_NELLY_VOICE_ID and ELEVENLABS_DREW_VOICE_ID on Render. Do not put API keys into source files or the developer editor.
+ElevenLabs has a limited free tier; voice access and usage limits apply. https://elevenlabs.io/pricing
+Deepgram also offers introductory credits: https://deepgram.com/pricing
 
-PREVIOUS FEATURES
-Animated rings/petals, Drew tech/grunt clicks and Nelly cat-like clicks, soft wind, original music, real weather, reminders, chat, developer templates via DEV page, and optional GLB model import remain included. Portraits are 2D rendered assets; no new 3D mesh is included. Reminders do not run while the tab is closed.
+MICROPHONE
+Browser recognition still requires supported Chrome/Edge and mic permission. Opera GX may expose microphone capture without a functioning recognition service.
+To use server transcription, add DEEPGRAM_API_KEY in Render Environment and redeploy. DEV page > Microphone engine > Auto. Tap mic to start, tap again to finish/send. A recording is capped at 30 seconds/8 MB. Audio is transmitted to Deepgram for transcription; not saved by this application server. Wake phrase uses browser recognition only.
+Hardware capture and live provider speech could not be verified remotely; these services require your configured keys.
 
-TESTED
-JavaScript syntax; startup and interface selection across all three folder layouts; private-file URL unavailable; mocked upstream verifies each identity, acronym, appearance and user memory in chat prompt; browser Memory UI save/clear and visibility of voice diagnostics. Physical mic, browser voice output and actual speech recognition on your computer still need testing. No explicit sexual roleplay feature is added.
+MUSIC & EFFECTS
+Nelly: Pink Daydream. Drew: Blue Orbit. Both are original included ambient recordings, free to use in this project. Music begins after a user interaction because browsers restrict autoplay.
+Drew has an original anime-inspired eye-activation synth effect, not the original Naruto Sharingan recording. Import your own permitted audio in DEV page > Drew button sound.
+Blush is a temporary visual overlay triggered by sweet words, no separate romance mode needed.
+
+DEV PAGE
+Type DEV page in chat. This is a local customization editor, not a secure admin login. Voice/memory/music tools, microphone engine, animation pace, accent, custom CSS, portrait/GLB import and isolated HTML widget previews are available. Changes stay on the current browser. Source JavaScript changes need a reviewed repository edit.
+
+FUTURE AI PROVIDERS
+AI Model dropdown saves future provider/model templates. Claude remains the only connected chat adapter. No OpenAI or DeepSeek requests are made. Adding a future provider requires a server adapter and its credentials; entering a name alone does not connect it.
+
+CHECKS
+Syntax checks, static browser UI checks, asset serving, capability flags, missing-credential errors and future-provider rejection tested. No paid provider calls were made.
