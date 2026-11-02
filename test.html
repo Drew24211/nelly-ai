@@ -12,10 +12,14 @@
 </head>
 <body>
   <h1>Nelly wake test</h1>
-  <p>Run <code>python nelly.py</code>, then clap twice or say "Hey Nelly".</p>
+  <p>Run <code>python nelly.py</code>, then clap twice or say "Hey Nelly". Anything you say appears below and in a bubble at the bottom.</p>
   <div id="status">Connecting...</div>
   <div id="log"></div>
   <script>
+    window.NELLY_OVERLAY = true;
+    window.nellyHeard = (text) => {
+      document.getElementById("log").textContent += new Date().toLocaleTimeString() + "  heard: " + text + "\n";
+    };
     window.nellyWake = (src) => {
       document.getElementById("log").textContent += new Date().toLocaleTimeString() + "  wake from " + src + "\n";
       document.body.style.background = "#3b1d44";

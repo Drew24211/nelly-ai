@@ -255,12 +255,22 @@ def drain():
 
 def transcribe(audio):
     pcm = (np.clip(audio, -1, 1) * 32767).astype(np.int16).tobytes()
+    text = ""
     try:
-        return recognizer.recognize_google(sr.AudioData(pcm, SR, 2)).lower()
+        text = recognizer.recognize_google(sr.AudioData(pcm, SR, 2)).lower()
     except sr.UnknownValueError:
-        return ""
+        pass
     except sr.RequestError as e:
-        print("speech service error:", e); return ""
+        print("speech service error:", e)
+        send_event(type="error", text="speech service unreachable")
+        return ""
+    if text:
+        print(f"Heard: {text}")
+        send_event(type="heard", text=text)
+    else:
+        print("Heard: (couldn't make that out)")
+        send_event(type="unclear")
+    return text
 
 def listen(wake, timeout=None):
     """wake=True: returns ('clap',None) or ('speech',audio). wake=False: command capture."""
@@ -287,6 +297,7 @@ def listen(wake, timeout=None):
         if rms > speech_thr:
             if not talking:
                 talking, utt = True, list(preroll)
+                send_event(type="listening")
             quiet = 0.0
         elif talking:
             quiet += BLOCK / SR
@@ -341,11 +352,16 @@ async def _broadcast(msg):
         try: await ws.send(msg)
         except Exception: _clients.discard(ws)
 
+def send_event(**ev):
+    """Push a small JSON event (listening / heard / unclear / wake) to any open site tab."""
+    if _loop and _clients:
+        asyncio.run_coroutine_threadsafe(_broadcast(json.dumps(ev)), _loop)
+
 def wake_web():
     if not _clients:                      # site not open yet: open it, it wakes itself on load
         webbrowser.open(WEB_URL.rstrip("/") + "/?wake=1")
     elif _loop:
-        asyncio.run_coroutine_threadsafe(_broadcast("wake"), _loop)
+        send_event(type="wake")
 
 # ───────────────────────── MAIN ─────────────────────────
 def main():

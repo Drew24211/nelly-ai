@@ -25,6 +25,23 @@ Open `test.html` in Chrome while `nelly.py` is running and clap twice. The page 
 "Connected" and logs each wake. If that works, the bridge is fine and any remaining
 issue is just what the site does on wake.
 
+## Seeing what Nelly hears
+Everything `nelly.py` hears is turned into text and sent to the site. By default it shows as a
+small "You: ..." bubble at the bottom of the screen, plus "Listening..." while you speak.
+The same text prints in the terminal as `Heard: ...`.
+
+To drop it into your site's chat box instead, define this before the script tag:
+```html
+<script>
+  window.nellyHeard = (text) => {
+    // add `text` as a user message in your chat, e.g. addMessage("user", text);
+  };
+</script>
+```
+Set `window.NELLY_OVERLAY = false;` to hide the bubble.
+If "Heard: (couldn't make that out)" shows up a lot, your mic is picking up but speech
+recognition can't parse it. Speak closer to the mic or check your input device.
+
 ## What "wake" does on your site
 By default the script taps the Nelly portrait image (`<img alt="...Nelly...">`), which is
 the page's "say hello" action. To run your own code instead, add this BEFORE the script tag:

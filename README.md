@@ -48,6 +48,9 @@ Add your own apps in `apps.json`. A target can be a name, a URL, or a per-OS obj
 "github": "https://github.com"
 ```
 
+## Seeing what she hears
+Every phrase is transcribed and printed in the terminal (`Heard: ...`) and sent to the site, where it shows as a "You: ..." bubble. See `website/ADD-TO-SITE.md` to put it into your chat box.
+
 ## Spotify voice commands
 These work from the always-on listener, without waking the website:
 - "Wake Spotify" / "open Spotify"
