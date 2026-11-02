@@ -1,0 +1,19 @@
+NELLY & DREW v12 WEBSITE RELEASE — READY TO DEPLOY
+
+For local testing extract to a new folder, npm install, npm start. Open http://localhost:3000.
+For Render installation upload all extracted files into the repository main folder, replace matches, commit and redeploy. This is the main website release. /api/health reports interfaceVersion 12.
+
+NEW
+Live news: GDELT links for World/Bahamas/Technology/Sports, fetched on request and refreshed every 5 minutes while the news panel is open. Data is cached on the server for 5 minutes. Current public source may be unavailable; no sample news is substituted. The upstream returned 503 during this run. Mocked validation/cache/link tests passed.
+Poly Haven: server catalog adapter, verified source access. Links to asset pages with CC0 download options. Powered by Poly Haven. Import a self-contained GLB after downloading/converting; these props are not rigged Nelly/Drew characters.
+Kokoro: experimental free on-device engine. Open Voice, choose a voice, Download & initialize Kokoro, then select Kokoro speech engine and save. Downloads a large ONNX model from Hugging Face with kokoro-js/Transformers.js through jsDelivr. No API key. Browser generation has not been verified end-to-end; hardware/memory/network compatibility vary. Default browser voices remain available.
+Connections: future integration plans have category/name/docs URL/environment variable name/notes. Plans do not connect arbitrary APIs. No keys stored there.
+
+EXISTING
+Claude uses ANTHROPIC_API_KEY and ANTHROPIC_MODEL on Render.
+ElevenLabs uses ELEVENLABS_API_KEY; choose voice IDs in Voice or server ELEVENLABS_NELLY_VOICE_ID / ELEVENLABS_DREW_VOICE_ID.
+Deepgram server mic uses DEEPGRAM_API_KEY. Auto engine records on first tap, sends on second tap; max30 seconds. Wake phrase relies on browser recognition. Real microphone hardware not remotely verified.
+Open-Meteo weather and three music tracks retained.
+Jamendo/other AI backends remain future integrations needing account/license/server adapters. No explicit sexual-roleplay backend added.
+
+Code checks and mocked server API tests passed. The package is not an external hosted chat service; this ZIP needs Node/Render for API routes.
