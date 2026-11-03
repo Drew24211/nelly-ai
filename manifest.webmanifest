@@ -3,7 +3,7 @@
   "name": "Nelly \u2014 Personal AI Assistant",
   "short_name": "Nelly",
   "description": "Your Nelly companion: chat, voice, weather, planning and music.",
-  "start_url": "/",
+  "start_url": "/mobile.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#100811",
