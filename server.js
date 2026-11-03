@@ -10,8 +10,8 @@ const baseDir=path.dirname(fileURLToPath(import.meta.url));
 // Handle the common upload layouts without exposing the repository or .env files.
 const candidates=['public','public/public','.'].map((folder,index)=>{const dir=path.resolve(baseDir,folder),file=path.join(dir,'index.html');if(!existsSync(file))return null;const html=readFileSync(file,'utf8');if(!html.includes('id="console"')||!html.includes('id="chatForm"'))return null;const version=Number(html.match(/(?:app|style)\.(?:js|css)\?v=(\d+)/)?.[1]||0);return {dir,version,index}}).filter(Boolean).sort((a,b)=>b.version-a.version||a.index-b.index);
 const selected=candidates[0]||{dir:path.join(baseDir,'public'),version:0};
-const assets=['connections.js','floating-cities.mp3','studio.js','blue-orbit.wav','index.html','style.css','app.js','living.js','model-viewer.js','nelly-anime.png','drew-anime.png','pink-daydream.wav','drew-click.wav','nelly-avatar.jpg','nelly-interface.jpg'];
-for(const asset of assets)app.get(asset==='index.html'?['/','/index.html']:'/'+asset,(req,res,next)=>{const file=path.join(selected.dir,asset);if(!existsSync(file))return next();if(/\.(?:html|js|css)$/.test(asset))res.set('Cache-Control','no-cache');res.sendFile(file)});
+const assets=['official.css','official.js','manifest.webmanifest','sw.js','phone.js','phone.css','offline.html','icon-192.png','icon-512.png','connections.js','floating-cities.mp3','studio.js','blue-orbit.wav','index.html','style.css','app.js','living.js','model-viewer.js','nelly-anime.png','drew-anime.png','pink-daydream.wav','drew-click.wav','nelly-avatar.jpg','nelly-interface.jpg'];
+for(const asset of assets)app.get(asset==='index.html'?['/','/index.html']:'/'+asset,(req,res,next)=>{const file=path.join(selected.dir,asset);if(!existsSync(file))return next();if(asset==='manifest.webmanifest')res.type('application/manifest+json');if(/\.(?:html|js|css|webmanifest)$/.test(asset))res.set('Cache-Control','no-cache');res.sendFile(file)});
 app.use(express.static(path.join(baseDir,'public'),{dotfiles:'deny'}));
 app.get('/api/health',(req,res)=>res.json({ok:true,interfaceVersion:selected.version}));
 const limiter = new Map();
